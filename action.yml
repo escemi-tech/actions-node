@@ -1,0 +1,64 @@
+name: "Node steps"
+description: "Composite Github Action to provides opinionated NodeJS steps"
+inputs:
+  package-manager:
+    description: "Used to specify a package managerµ. Supported values: 'yarn'"
+    default: "yarn"
+  coverage:
+    description: "Optional flag to enable coverage report. See https://github.com/codecov/codecov-action"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+
+    - id: nvm
+      shell: bash
+      run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+
+    - uses: actions/setup-node@v2.4.0
+      id: setup-node
+      with:
+        node-version: "${{ steps.nvm.outputs.NVMRC }}"
+        cache: ${{ inputs.package-manager }}
+        cache-dependency-path: "**/yarn.lock"
+
+    - name: ⚙️ Install Dependencies
+      # FIXME: https://github.com/actions/runner/issues/834 (if: steps.setup-node.outputs.cache-hit != 'true')
+      shell: bash
+      run: |
+        [[ "${{ steps.setup-node.outputs.cache-hit }}" != "true" ]] && yarn install --frozen-lockfile
+
+    - name: 👕 Lint
+      shell: bash
+      run: yarn lint
+
+    - name: 🏗️ Build
+      shell: bash
+      run: yarn build
+
+    - name: ♻️ Get Jest cache dir
+      id: jest-cache-dir-path
+      shell: bash
+      run: |
+        JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
+        echo "::set-output name=dir::$JEST_CACHE_DIR"
+
+    - name: ♻️ Test cache
+      uses: actions/cache@v2.1.6
+      with:
+        path: |
+          ${{ steps.jest-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-test-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-test-
+
+    - name: 🧪 Test
+      shell: bash
+      env:
+        CI: true
+      run: yarn test:ci
+
+    - name: 📊 Code coverage
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.coverage == 'true')
+      uses: codecov/codecov-action@v2.1.0

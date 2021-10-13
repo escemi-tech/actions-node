@@ -4,6 +4,8 @@ inputs:
   package-manager:
     description: "Used to specify a package managerµ. Supported values: 'yarn'"
     default: "yarn"
+  test:
+    description: "Optional flag to enable tests steps."
   coverage:
     description: "Optional flag to enable coverage report. See https://github.com/codecov/codecov-action"
 
@@ -27,24 +29,34 @@ runs:
       # FIXME: https://github.com/actions/runner/issues/834 (if: steps.setup-node.outputs.cache-hit != 'true')
       shell: bash
       run: |
-        [[ "${{ steps.setup-node.outputs.cache-hit }}" != "true" ]] && yarn install --frozen-lockfile
-
-    - name: 👕 Lint
-      shell: bash
-      run: yarn lint
+        if ! echo ${{ steps.setup-node.outputs.cache-hit }} | grep -c "true"; then
+          yarn install --frozen-lockfile;
+        fi
 
     - name: 🏗️ Build
       shell: bash
       run: yarn build
 
+    - name: 👕 Lint
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
+      shell: bash
+      run: |
+        if echo ${{ inputs.test }} | grep -c "true"; then
+          yarn lint
+        fi
+
     - name: ♻️ Get Jest cache dir
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
       id: jest-cache-dir-path
       shell: bash
       run: |
-        JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
-        echo "::set-output name=dir::$JEST_CACHE_DIR"
+        if echo ${{ inputs.test }} | grep -c "true"; then
+          JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
+          echo "::set-output name=dir::$JEST_CACHE_DIR"
+        fi
 
     - name: ♻️ Test cache
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
       uses: actions/cache@v2.1.6
       with:
         path: |
@@ -54,11 +66,15 @@ runs:
           ${{ runner.os }}-test-
 
     - name: 🧪 Test
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
       shell: bash
       env:
         CI: true
-      run: yarn test:ci
+      run: |
+        if echo ${{ inputs.test }} | grep -c "true"; then
+          yarn test:ci
+        fi
 
     - name: 📊 Code coverage
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.coverage == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true' && inputs.coverage == 'true')
       uses: codecov/codecov-action@v2.1.0

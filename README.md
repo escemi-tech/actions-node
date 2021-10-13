@@ -2,15 +2,35 @@
 
 Composite Github Action to provides opinionated NodeJS steps
 
+## Usage
+
+See [action.yml](action.yml)
+
+**Basic:**
+
+```yaml
+steps:
+  - uses: escemi-tech/actions-node@v1.0.0
+```
+
+**With tests:**
+
+```yaml
+steps:
+  - uses: escemi-tech/actions-node@v1.0.0
+    with:
+      test: true
+```
+
 ## Steps
 
 - Checkout
 - Setup Node.js, with given package manager and version retrieve from `.nvmrc`
 - Install Dependencies
-- Lint
+- Lint (if `test` is enabled)
+- Test (if `test` is enabled)
+- Code coverage reporting (if `test` and `coverage` are enabled)
 - Build
-- Test
-- Code coverage reporting if `coverage` is enabled
 
 ## Helping Project
 

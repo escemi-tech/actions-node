@@ -1,9 +1,16 @@
 name: "Node steps"
 description: "Composite Github Action to provides opinionated NodeJS steps"
+branding:
+  icon: "hexagon"
+  color: "green"
+
 inputs:
   package-manager:
     description: "Used to specify a package managerµ. Supported values: 'yarn'"
     default: "yarn"
+  build:
+    description: Build parameters.
+    default: "build"
   test:
     description: "Optional flag to enable tests steps."
   coverage:
@@ -29,19 +36,94 @@ runs:
       # FIXME: https://github.com/actions/runner/issues/834 (if: steps.setup-node.outputs.cache-hit != 'true')
       shell: bash
       run: |
-        if ! echo ${{ steps.setup-node.outputs.cache-hit }} | grep -c "true"; then
+        if ! echo "${{ steps.setup-node.outputs.cache-hit }}" | grep -c "true" ; then
           yarn install --frozen-lockfile;
         fi
 
+    - id: yarn-installed-packages
+      shell: bash
+      run: |
+        echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
+
+    - name: ♻️ Gatsby cache
+      # FIXME: https://github.com/actions/runner/issues/834 (if: steps.yarn-installed-packages.outputs.gatsby == 'true')
+      uses: actions/cache@v2.1.6
+      id: gatsby-cache
+      with:
+        path: |
+          .cache
+          public
+        key: ${{ runner.os }}-cache-gatsby-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-cache-gatsby-
+
+    - id: prepare-build
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build)
+      shell: bash
+      run: |
+        BUILD_INPUT=$(cat <<-END
+            { "build:ci": "ok" }
+        END
+        )
+        BUILD_INPUT=$(echo $BUILD_INPUT | sed 's/ *$//g')
+
+        if [ -z "$BUILD_INPUT" ]; then
+            exit 0;
+        fi
+
+        # Pure string
+        if echo "$BUILD_INPUT" | grep -c "^[_:a-zA-Z0-9]\+$" > /dev/null; then 
+            BUILD_COMMAND=$( echo "\"$BUILD_INPUT\"" | jq '.' )
+            echo ::set-output name=command::$BUILD_COMMAND
+            echo ::set-output name=env::{}
+            exit 0;
+        fi
+
+        CHECK_JSON=$( { echo "$BUILD_INPUT" | jq empty; } 2>&1 )
+        if [ ! $? -eq 0 ] ; then
+            echo -e "Given \"build\" input is not a valid JSON string: $CHECK_JSON.\n\"$BUILD_INPUT\""
+            exit 1;
+        fi
+
+        # Build input is a JSON string
+        if echo "$BUILD_INPUT" | jq 'type == "string"' | grep -c "true" > /dev/null; then
+
+            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq '.' )
+            echo ::set-output name=command::$BUILD_COMMAND
+            echo ::set-output name=env::{}
+            exit 0;
+
+        fi
+
+        # Build input is a JSON object
+        if echo "$BUILD_INPUT" | jq 'type == "object"' | grep -c "true" > /dev/null; then
+
+            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq ' . | if has("command") then .command else "build" end' )
+            echo ::set-output name=command::$BUILD_COMMAND
+
+            BUILD_ENV=$( echo "$BUILD_INPUT" | jq ' . | if has("env") then .env else {} end' )
+            echo ::set-output name=env::$BUILD_ENV
+            exit 0;
+
+        fi
+
+        echo -e "Given \"build\" input is not a string nor an object.\n$BUILD_INPUT"
+        exit 1;
+
     - name: 🏗️ Build
       shell: bash
-      run: yarn build
+      # FIXME: https://github.com/actions/runner/issues/834 (if: steps.prepare-build.command)
+      env: ${{ fromJSON(steps.prepare-build.outputs.env) }}
+      run: |
+        if [ -n "${{ steps.prepare-build.outputs.command }}" ]; then
+          yarn ${{ steps.prepare-build.outputs.command }}
+        fi
 
     - name: 👕 Lint
       # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
       shell: bash
       run: |
-        if echo ${{ inputs.test }} | grep -c "true"; then
+        if echo "${{ inputs.test }}" | grep -c "true"; then
           yarn lint
         fi
 
@@ -50,10 +132,8 @@ runs:
       id: jest-cache-dir-path
       shell: bash
       run: |
-        if echo ${{ inputs.test }} | grep -c "true"; then
-          JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
-          echo "::set-output name=dir::$JEST_CACHE_DIR"
-        fi
+        JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
+        echo "::set-output name=dir::$JEST_CACHE_DIR"
 
     - name: ♻️ Test cache
       # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
@@ -71,7 +151,7 @@ runs:
       env:
         CI: true
       run: |
-        if echo ${{ inputs.test }} | grep -c "true"; then
+        if echo "${{ inputs.test }}" | grep -c "true"; then
           yarn test:ci
         fi
 

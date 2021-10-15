@@ -6,14 +6,60 @@ Composite Github Action to provides opinionated NodeJS steps
 
 See [action.yml](action.yml)
 
-**Basic:**
-
 ```yaml
 steps:
   - uses: escemi-tech/actions-node@v1.0.0
 ```
 
-**With tests:**
+## Inputs
+
+### `package-manager`:
+
+Used to specify a package managerµ. Supported values: 'yarn'.
+
+Default: "yarn"
+
+### `build`:
+
+Build parameters.
+Default: "build"
+
+It can be a string to specify the script to run. Example:
+
+```yml
+steps:
+  - uses: escemi-tech/actions-node@v1.0.0
+    with:
+      build: "build:prod"
+```
+
+It can be a json object to specify the script and / or the env variables. Example:
+
+```yml
+steps:
+  - uses: escemi-tech/actions-node@v1.0.0
+    with:
+      build: |
+        ${{ toJson(fromJson('{
+          "env": {
+            "NODE_ENV": "production"
+          }
+        }')) }}
+```
+
+It can be disabled:
+
+```yml
+steps:
+  - uses: escemi-tech/actions-node@v1.0.0
+    with:
+      build: ""
+```
+
+### `test`:
+
+Optional flag to enable tests steps.
+Default: false
 
 ```yaml
 steps:
@@ -22,15 +68,20 @@ steps:
       test: true
 ```
 
+### `coverage`:
+
+"Optional flag to enable coverage report. See https://github.com/codecov/codecov-action"
+Deplaut false
+
 ## Steps
 
 - Checkout
 - Setup Node.js, with given package manager and version retrieve from `.nvmrc`
 - Install Dependencies
+- Build (if `build` is enabled)
 - Lint (if `test` is enabled)
 - Test (if `test` is enabled)
 - Code coverage reporting (if `test` and `coverage` are enabled)
-- Build
 
 ## Helping Project
 

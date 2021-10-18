@@ -70,18 +70,38 @@ steps:
 
 ### `coverage`:
 
-"Optional flag to enable coverage report. See https://github.com/codecov/codecov-action"
+Optional flag to enable coverage report. See https://github.com/codecov/codecov-action
 Deplaut false
 
 ## Steps
 
 - Checkout
-- Setup Node.js, with given package manager and version retrieve from `.nvmrc`
+  See: https://github.com/actions/checkout
+
+- Setup Node.js:
+  See: https://github.com/actions/setup-node
+  Use given package manager and version retrieve from `.nvmrc`.
+
 - Install Dependencies
-- Build (if `build` is enabled)
-- Lint (if `test` is enabled)
-- Test (if `test` is enabled)
-- Code coverage reporting (if `test` and `coverage` are enabled)
+  If cache hit is not reached
+
+- CodeQL Analysis:
+  See https://github.com/github/codeql-action
+
+- Build:
+  if `build` is enabled.
+  Handle gatsby cache if gastby is installed.
+
+- Lint:
+  If `test` is enabled.
+
+- Test:
+  If `test` is enabled.
+  Handle Jest cache.
+
+- Code coverage reporting:
+  See https://github.com/codecov/codecov-action
+  If `test` and `coverage` are enabled.
 
 ## Helping Project
 

@@ -40,6 +40,10 @@ runs:
           yarn install --frozen-lockfile;
         fi
 
+    - name: 🛡️ CodeQL Analysis
+      uses: github/codeql-action/init@v1
+    - uses: github/codeql-action/analyze@v1
+
     - id: yarn-installed-packages
       shell: bash
       run: |

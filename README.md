@@ -86,6 +86,7 @@ Deplaut false
   If cache hit is not reached
 
 - CodeQL Analysis:
+  If `checks` and `code-ql` are enabled.
   See https://github.com/github/codeql-action
 
 - Build:
@@ -93,15 +94,15 @@ Deplaut false
   Handle gatsby cache if gastby is installed.
 
 - Lint:
-  If `test` is enabled.
+  If `checks` and `lint` are enabled.
 
 - Test:
-  If `test` is enabled.
+  If `checks` and `test` are enabled.
   Handle Jest cache.
 
 - Code coverage reporting:
   See https://github.com/codecov/codecov-action
-  If `test` and `coverage` are enabled.
+  If `checks` and `coverage` are enabled.
 
 ## Helping Project
 

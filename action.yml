@@ -14,8 +14,8 @@ inputs:
   checks:
     description: "Optional flag to enable check steps."
   code-ql:
-    description: "Optional flag to enable CodeQL analysis. See https://github.com/github/codeql-action"
-    default: true
+    description: "Code QL analysis language. See https://github.com/github/codeql-action"
+    default: "typescript"
   test:
     description: "Optional flag to enable test. See https://github.com/github/codeql-action"
     default: true
@@ -47,19 +47,21 @@ runs:
         fi
 
     - name: 🛡️ CodeQL Analysis
-      # FIXME: https://github.com/actions/runner/issues/834 (if: input.checks == 'true' && input.code-ql == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.code-ql)
       uses: github/codeql-action/init@v1
+      with:
+        languages: ${{ inputs.code-ql }}
     - uses: github/codeql-action/analyze@v1
-      # FIXME: https://github.com/actions/runner/issues/834 (if: input.checks == 'true' && input.code-ql == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.code-ql)
 
     - id: yarn-installed-packages
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build)
       shell: bash
       run: |
         echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
 
     - name: ♻️ Gatsby cache
-      # FIXME: https://github.com/actions/runner/issues/834 (if: input.build == 'true' && 'steps.yarn-installed-packages.outputs.gatsby == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build && 'steps.yarn-installed-packages.outputs.gatsby)
       uses: actions/cache@v2.1.6
       id: gatsby-cache
       with:
@@ -85,10 +87,16 @@ runs:
         fi
 
         # Pure string
-        if echo "$BUILD_INPUT" | grep -c "^[_:a-zA-Z0-9]\+$" > /dev/null; then 
-            BUILD_COMMAND=$( echo "\"$BUILD_INPUT\"" | jq '.' )
-            echo ::set-output name=command::$BUILD_COMMAND
+        if echo "$BUILD_INPUT" | grep -c "^[_:a-zA-Z0-9]\+$" > /dev/null; then            
             echo ::set-output name=env::{}
+
+            BUILD_COMMAND=$( echo "\"$BUILD_INPUT\"" | jq '.' )
+            if [ "$BUILD_COMMAND" == \""false\"" ]; then
+              echo ::set-output name=command::
+            else
+              echo ::set-output name=command::$BUILD_COMMAND
+            fi
+
             exit 0;
         fi
 
@@ -133,7 +141,7 @@ runs:
         fi
 
     - name: 👕 Lint
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.lint == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.lint)
       shell: bash
       run: |
         if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.lint }}" = "true" ]; then
@@ -141,25 +149,28 @@ runs:
         fi
 
     - name: ♻️ Get Jest cache dir
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.test == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.test)
       id: jest-cache-dir-path
       shell: bash
       run: |
-        JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
-        echo "::set-output name=dir::$JEST_CACHE_DIR"
+        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.test }}" = "true" ]; then
+          JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
+          echo "::set-output name=dir::$JEST_CACHE_DIR"
+        else
+          echo "::set-output name=dir::/tmp/unknown"
+        fi
 
     - name: ♻️ Test cache
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.test)
       uses: actions/cache@v2.1.6
       with:
-        path: |
-          ${{ steps.jest-cache-dir-path.outputs.dir }}
+        path: ${{ steps.jest-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-test-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-test-
 
     - name: 🧪 Test
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.test == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.test)
       shell: bash
       env:
         CI: true
@@ -169,5 +180,5 @@ runs:
         fi
 
     - name: 📊 Code coverage
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.coverage == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.coverage)
       uses: codecov/codecov-action@v2.1.0

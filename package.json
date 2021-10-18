@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "github-action-readme-generator": "^1.0.12",
+    "yaml-validator": "^3.0.1"
+  },
+  "scripts": {
+    "lint": "yaml-validator action.yml",
+    "ghadocs": "github-action-readme-generator --readme README.md && git add README.md"
+  }
+}

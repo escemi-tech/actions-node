@@ -11,8 +11,14 @@ inputs:
   build:
     description: Build parameters.
     default: "build"
+  checks:
+    description: "Optional flag to enable check steps."
+  code-ql:
+    description: "Optional flag to enable CodeQL analysis. See https://github.com/github/codeql-action"
+    default: true
   test:
-    description: "Optional flag to enable tests steps."
+    description: "Optional flag to enable test. See https://github.com/github/codeql-action"
+    default: true
   coverage:
     description: "Optional flag to enable coverage report. See https://github.com/codecov/codecov-action"
 
@@ -36,21 +42,24 @@ runs:
       # FIXME: https://github.com/actions/runner/issues/834 (if: steps.setup-node.outputs.cache-hit != 'true')
       shell: bash
       run: |
-        if ! echo "${{ steps.setup-node.outputs.cache-hit }}" | grep -c "true" ; then
+        if [ "${{ steps.setup-node.outputs.cache-hit }}" != "true" ]; then
           yarn install --frozen-lockfile;
         fi
 
     - name: 🛡️ CodeQL Analysis
+      # FIXME: https://github.com/actions/runner/issues/834 (if: input.checks == 'true' && input.code-ql == 'true')
       uses: github/codeql-action/init@v1
     - uses: github/codeql-action/analyze@v1
+      # FIXME: https://github.com/actions/runner/issues/834 (if: input.checks == 'true' && input.code-ql == 'true')
 
     - id: yarn-installed-packages
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build == 'true')
       shell: bash
       run: |
         echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
 
     - name: ♻️ Gatsby cache
-      # FIXME: https://github.com/actions/runner/issues/834 (if: steps.yarn-installed-packages.outputs.gatsby == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: input.build == 'true' && 'steps.yarn-installed-packages.outputs.gatsby == 'true')
       uses: actions/cache@v2.1.6
       id: gatsby-cache
       with:
@@ -66,7 +75,7 @@ runs:
       shell: bash
       run: |
         BUILD_INPUT=$(cat <<-END
-            { "build:ci": "ok" }
+            ${{ inputs.build }}
         END
         )
         BUILD_INPUT=$(echo $BUILD_INPUT | sed 's/ *$//g')
@@ -124,15 +133,15 @@ runs:
         fi
 
     - name: 👕 Lint
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.lint == 'true')
       shell: bash
       run: |
-        if echo "${{ inputs.test }}" | grep -c "true"; then
+        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.lint }}" = "true" ]; then
           yarn lint
         fi
 
     - name: ♻️ Get Jest cache dir
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.test == 'true')
       id: jest-cache-dir-path
       shell: bash
       run: |
@@ -150,15 +159,15 @@ runs:
           ${{ runner.os }}-test-
 
     - name: 🧪 Test
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.test == 'true')
       shell: bash
       env:
         CI: true
       run: |
-        if echo "${{ inputs.test }}" | grep -c "true"; then
+        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.test }}" = "true" ]; then
           yarn test:ci
         fi
 
     - name: 📊 Code coverage
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.test == 'true' && inputs.coverage == 'true')
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks == 'true' && inputs.coverage == 'true')
       uses: codecov/codecov-action@v2.1.0

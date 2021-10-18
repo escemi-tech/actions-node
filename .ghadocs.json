@@ -1,0 +1,17 @@
+{
+  "paths": {
+    "action": "action.yml",
+    "readme": "README.md"
+  },
+  "show_logo": "true",
+  "versioning": {
+    "enabled": "true",
+    "override": "",
+    "prefix": "v",
+    "branch": "main"
+  },
+  "owner": "escemi-tech",
+  "repo": "actions-node",
+  "title_prefix": "GitHub Action: ",
+  "pretty": "true"
+}

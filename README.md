@@ -1,77 +1,48 @@
-# actions-node
+<!-- start title -->
+
+# GitHub Action: Node steps
+
+<!-- end title -->
+
+<!-- start description -->
 
 Composite Github Action to provides opinionated NodeJS steps
 
+<!-- end description -->
+<!-- start contents -->
+<!-- end contents -->
+
 ## Usage
 
-See [action.yml](action.yml)
+<!-- start usage -->
 
 ```yaml
-steps:
-  - uses: escemi-tech/actions-node@v1.0.0
+- uses: escemi-tech/actions-node@
+  with:
+    # Used to specify a package managerµ. Supported values: 'yarn'
+    # Default: yarn
+    package-manager: ""
+
+    # Build parameters.
+    # Default: build
+    build: ""
+
+    # Optional flag to enable check steps.
+    checks: ""
+
+    # Optional flag to enable CodeQL analysis. See https://github.com/github/codeql-action
+    # Default: true
+    code-ql: ""
+
+    # Optional flag to enable test. See https://github.com/github/codeql-action
+    # Default: true
+    test: ""
+
+    # Optional flag to enable coverage report. See https://github.com/codecov/codecov-action
+    coverage: ""
 ```
 
-## Inputs
-
-### `package-manager`:
-
-Used to specify a package managerµ. Supported values: 'yarn'.
-
-Default: "yarn"
-
-### `build`:
-
-Build parameters.
-Default: "build"
-
-It can be a string to specify the script to run. Example:
-
-```yml
-steps:
-  - uses: escemi-tech/actions-node@v1.0.0
-    with:
-      build: "build:prod"
-```
-
-It can be a json object to specify the script and / or the env variables. Example:
-
-```yml
-steps:
-  - uses: escemi-tech/actions-node@v1.0.0
-    with:
-      build: |
-        ${{ toJson(fromJson('{
-          "env": {
-            "NODE_ENV": "production"
-          }
-        }')) }}
-```
-
-It can be disabled:
-
-```yml
-steps:
-  - uses: escemi-tech/actions-node@v1.0.0
-    with:
-      build: ""
-```
-
-### `test`:
-
-Optional flag to enable tests steps.
-Default: false
-
-```yaml
-steps:
-  - uses: escemi-tech/actions-node@v1.0.0
-    with:
-      test: true
-```
-
-### `coverage`:
-
-Optional flag to enable coverage report. See https://github.com/codecov/codecov-action
-Deplaut false
+<!-- end usage -->
 
 ## Steps
 
@@ -103,6 +74,53 @@ Deplaut false
 - Code coverage reporting:
   See https://github.com/codecov/codecov-action
   If `checks` and `coverage` are enabled.
+
+## Inputs
+
+See [action.yml](action.yml)
+
+<!-- start inputs -->
+
+| **Input**             | **Description**                                                                        | **Default** | **Required** |
+| :-------------------- | :------------------------------------------------------------------------------------- | :---------: | :----------: |
+| **`package-manager`** | Used to specify a package managerµ. Supported values: 'yarn'                           |   `yarn`    |  **false**   |
+| **`build`**           | Build parameters.                                                                      |   `build`   |  **false**   |
+| **`checks`**          | Optional flag to enable check steps.                                                   |             |  **false**   |
+| **`code-ql`**         | Optional flag to enable CodeQL analysis. See https://github.com/github/codeql-action   |   `true`    |  **false**   |
+| **`test`**            | Optional flag to enable test. See https://github.com/github/codeql-action              |   `true`    |  **false**   |
+| **`coverage`**        | Optional flag to enable coverage report. See https://github.com/codecov/codecov-action |             |  **false**   |
+
+<!-- end inputs -->
+
+### Examples
+
+### `build`:
+
+#### It can be a string to specify the script to run. Example:
+
+```yml
+steps:
+  - uses: escemi-tech/actions-node@v1.0.0
+    with:
+      build: "build:prod"
+```
+
+#### It can be a json object to specify the script and / or the env variables. Example:
+
+```yml
+steps:
+  - uses: escemi-tech/actions-node@v1.0.0
+    with:
+      build: |
+        ${{ toJson(fromJson('{
+          "env": {
+            "NODE_ENV": "production"
+          }
+        }')) }}
+```
+
+<!-- start outputs -->
+<!-- end outputs -->
 
 ## Helping Project
 

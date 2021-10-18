@@ -14,3 +14,41 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: ./
+        with:
+          build: false
+          checks: true
+          # FIXME: https://github.com/actions/runner/issues/834 (code-ql: false)
+          test: false
+          coverage: false
+
+  publish:
+    needs: continuous-integration
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: github-pages
+    steps:
+      - uses: ./
+        with:
+          build: false
+
+      - name: 🔖 Configure publish
+        run: |
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.name "${{ github.actor }}"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/$GITHUB_REPOSITORY
+          mkdir -p /tmp/publish
+
+      - name: 📖 Generate README
+        run: |
+          yarn ghadocs
+          cp README.md /tmp/publish/index.md
+
+      - name: 🌐 Publish Github pages
+        uses: peaceiris/actions-gh-pages@v3.8.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: /tmp/publish
+          enable_jekyll: true

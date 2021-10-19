@@ -13,6 +13,9 @@ inputs:
     default: "build"
   checks:
     description: "Optional flag to enable check steps."
+  lint:
+    description: "Optional flag to enable linting"
+    default: true
   code-ql:
     description: "Code QL analysis language. See https://github.com/github/codeql-action"
     default: "typescript"
@@ -21,6 +24,7 @@ inputs:
     default: true
   coverage:
     description: "Optional flag to enable coverage report. See https://github.com/codecov/codecov-action"
+    default: true
 
 runs:
   using: "composite"
@@ -37,6 +41,8 @@ runs:
         node-version: "${{ steps.nvm.outputs.NVMRC }}"
         cache: ${{ inputs.package-manager }}
         cache-dependency-path: "**/yarn.lock"
+      env:
+        ACTIONS_RUNNER_DEBUG: "true"
 
     - name: ⚙️ Install Dependencies
       # FIXME: https://github.com/actions/runner/issues/834 (if: steps.setup-node.outputs.cache-hit != 'true')
@@ -44,6 +50,14 @@ runs:
       run: |
         if [ "${{ steps.setup-node.outputs.cache-hit }}" != "true" ]; then
           yarn install --frozen-lockfile;
+        fi
+
+    - name: 👕 Lint
+      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.lint)
+      shell: bash
+      run: |
+        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.lint }}" = "true" ]; then
+          yarn lint
         fi
 
     - name: 🛡️ CodeQL Analysis
@@ -138,14 +152,6 @@ runs:
       run: |
         if [ -n "${{ steps.prepare-build.outputs.command }}" ]; then
           yarn ${{ steps.prepare-build.outputs.command }}
-        fi
-
-    - name: 👕 Lint
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.lint)
-      shell: bash
-      run: |
-        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.lint }}" = "true" ]; then
-          yarn lint
         fi
 
     - name: ♻️ Get Jest cache dir

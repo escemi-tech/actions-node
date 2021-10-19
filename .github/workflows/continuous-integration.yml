@@ -15,8 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Setup Node
-        uses: ./
+      - uses: ./
         with:
           build: false
           checks: true
@@ -30,9 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: github-pages
     steps:
-      - uses: ./
-        with:
-          build: false
+      - uses: actions/checkout@v2
 
       - name: 🔖 Configure publish
         run: |
@@ -42,9 +39,8 @@ jobs:
           mkdir -p /tmp/publish
 
       - name: 📖 Generate README
-        run: |
-          yarn ghadocs
-          cp README.md /tmp/publish/index.md
+        uses: bitflight-devops/github-action-readme-generator@v1.0.12a
+      - run: cp README.md /tmp/publish/index.md
 
       - name: 🌐 Publish Github pages
         uses: peaceiris/actions-gh-pages@v3.8.0

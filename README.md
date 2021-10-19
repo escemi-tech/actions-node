@@ -30,8 +30,12 @@ Composite Github Action to provides opinionated NodeJS steps
     # Optional flag to enable check steps.
     checks: ""
 
-    # Optional flag to enable CodeQL analysis. See https://github.com/github/codeql-action
+    # Optional flag to enable linting
     # Default: true
+    lint: ""
+
+    # Code QL analysis language. See https://github.com/github/codeql-action
+    # Default: typescript
     code-ql: ""
 
     # Optional flag to enable test. See https://github.com/github/codeql-action
@@ -39,6 +43,7 @@ Composite Github Action to provides opinionated NodeJS steps
     test: ""
 
     # Optional flag to enable coverage report. See https://github.com/codecov/codecov-action
+    # Default: true
     coverage: ""
 ```
 
@@ -81,14 +86,15 @@ See [action.yml](action.yml)
 
 <!-- start inputs -->
 
-| **Input**             | **Description**                                                                        | **Default** | **Required** |
-| :-------------------- | :------------------------------------------------------------------------------------- | :---------: | :----------: |
-| **`package-manager`** | Used to specify a package managerµ. Supported values: 'yarn'                           |   `yarn`    |  **false**   |
-| **`build`**           | Build parameters.                                                                      |   `build`   |  **false**   |
-| **`checks`**          | Optional flag to enable check steps.                                                   |             |  **false**   |
-| **`code-ql`**         | Optional flag to enable CodeQL analysis. See https://github.com/github/codeql-action   |   `true`    |  **false**   |
-| **`test`**            | Optional flag to enable test. See https://github.com/github/codeql-action              |   `true`    |  **false**   |
-| **`coverage`**        | Optional flag to enable coverage report. See https://github.com/codecov/codecov-action |             |  **false**   |
+| **Input**             | **Description**                                                                        | **Default**  | **Required** |
+| :-------------------- | :------------------------------------------------------------------------------------- | :----------: | :----------: |
+| **`package-manager`** | Used to specify a package managerµ. Supported values: 'yarn'                           |    `yarn`    |  **false**   |
+| **`build`**           | Build parameters.                                                                      |   `build`    |  **false**   |
+| **`checks`**          | Optional flag to enable check steps.                                                   |              |  **false**   |
+| **`lint`**            | Optional flag to enable linting                                                        |    `true`    |  **false**   |
+| **`code-ql`**         | Code QL analysis language. See https://github.com/github/codeql-action                 | `typescript` |  **false**   |
+| **`test`**            | Optional flag to enable test. See https://github.com/github/codeql-action              |    `true`    |  **false**   |
+| **`coverage`**        | Optional flag to enable coverage report. See https://github.com/codecov/codecov-action |    `true`    |  **false**   |
 
 <!-- end inputs -->
 

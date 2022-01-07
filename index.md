@@ -21,7 +21,7 @@ Composite Github Action to provides opinionated NodeJS steps
   with:
     # Token used by checkout. See https://github.com/actions/checkout
     # Default: ${{ github.token }}
-    checkout_token: ""
+    checkout-token: ""
 
     # Used to specify a package manager. Supported values: 'yarn'
     # Default: yarn
@@ -92,7 +92,7 @@ See [action.yml](action.yml)
 
 | **Input**             | **Description**                                                                        |      **Default**      | **Required** |
 | :-------------------- | :------------------------------------------------------------------------------------- | :-------------------: | :----------: |
-| **`checkout_token`**  | Token used by checkout. See https://github.com/actions/checkout                        | `${{ github.token }}` |  **false**   |
+| **`checkout-token`**  | Token used by checkout. See https://github.com/actions/checkout                        | `${{ github.token }}` |  **false**   |
 | **`package-manager`** | Used to specify a package manager. Supported values: 'yarn'                            |        `yarn`         |  **false**   |
 | **`build`**           | Build parameters.                                                                      |        `build`        |  **false**   |
 | **`checks`**          | Optional flag to enable check steps.                                                   |                       |  **false**   |

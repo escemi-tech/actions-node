@@ -5,8 +5,11 @@ branding:
   color: "green"
 
 inputs:
+  checkout_token:
+    description: "Token used by checkout. See https://github.com/actions/checkout"
+    default: ${{ github.token }}
   package-manager:
-    description: "Used to specify a package managerµ. Supported values: 'yarn'"
+    description: "Used to specify a package manager. Supported values: 'yarn'"
     default: "yarn"
   build:
     description: Build parameters.
@@ -45,37 +48,30 @@ runs:
         ACTIONS_RUNNER_DEBUG: "true"
 
     - name: ⚙️ Install Dependencies
-      # FIXME: https://github.com/actions/runner/issues/834 (if: steps.setup-node.outputs.cache-hit != 'true')
+      if: steps.setup-node.outputs.cache-hit != 'true'
       shell: bash
-      run: |
-        if [ "${{ steps.setup-node.outputs.cache-hit }}" != "true" ]; then
-          yarn install --frozen-lockfile;
-        fi
+      run: yarn install --frozen-lockfile;
 
     - name: 👕 Lint
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.lint)
+      if: inputs.checks == 'true' && inputs.lint == 'true'
       shell: bash
-      run: |
-        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.lint }}" = "true" ]; then
-          yarn lint
-        fi
+      run: yarn lint
 
     - name: 🛡️ CodeQL Analysis
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.code-ql)
+      if: inputs.checks == 'true' && inputs.code-ql == 'true'
       uses: github/codeql-action/init@v1
       with:
         languages: ${{ inputs.code-ql }}
     - uses: github/codeql-action/analyze@v1
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.code-ql)
+      if: inputs.checks == 'true' && inputs.code-ql == 'true'
 
     - id: yarn-installed-packages
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build)
+      if: inputs.build != 'false'
       shell: bash
-      run: |
-        echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
+      run: echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
 
     - name: ♻️ Gatsby cache
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build && 'steps.yarn-installed-packages.outputs.gatsby)
+      if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby
       uses: actions/cache@v2.1.6
       id: gatsby-cache
       with:
@@ -87,7 +83,7 @@ runs:
           ${{ runner.os }}-cache-gatsby-
 
     - id: prepare-build
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.build)
+      if: inputs.build != 'false'
       shell: bash
       run: |
         BUILD_INPUT=$(cat <<-END
@@ -147,27 +143,20 @@ runs:
 
     - name: 🏗️ Build
       shell: bash
-      # FIXME: https://github.com/actions/runner/issues/834 (if: steps.prepare-build.command)
+      if: steps.prepare-build.command
       env: ${{ fromJSON(steps.prepare-build.outputs.env) }}
-      run: |
-        if [ -n "${{ steps.prepare-build.outputs.command }}" ]; then
-          yarn ${{ steps.prepare-build.outputs.command }}
-        fi
+      run: yarn ${{ steps.prepare-build.outputs.command }}
 
     - name: ♻️ Get Jest cache dir
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.test)
+      if: inputs.checks == 'true' && inputs.test == 'true'
       id: jest-cache-dir-path
       shell: bash
       run: |
-        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.test }}" = "true" ]; then
-          JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
-          echo "::set-output name=dir::$JEST_CACHE_DIR"
-        else
-          echo "::set-output name=dir::/tmp/unknown"
-        fi
+        JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
+        echo "::set-output name=dir::$JEST_CACHE_DIR"
 
     - name: ♻️ Test cache
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.test)
+      if: inputs.checks == 'true' && inputs.test == 'true'
       uses: actions/cache@v2.1.6
       with:
         path: ${{ steps.jest-cache-dir-path.outputs.dir }}
@@ -176,15 +165,12 @@ runs:
           ${{ runner.os }}-test-
 
     - name: 🧪 Test
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.test)
+      if: inputs.checks == 'true' && inputs.test == 'true'
       shell: bash
       env:
         CI: true
-      run: |
-        if [ "${{ inputs.checks }}" = "true" ] && [ "${{ inputs.test }}" = "true" ]; then
-          yarn test:ci
-        fi
+      run: yarn test:ci
 
     - name: 📊 Code coverage
-      # FIXME: https://github.com/actions/runner/issues/834 (if: inputs.checks && inputs.coverage)
+      if: inputs.checks == 'true' && inputs.coverage == 'true'
       uses: codecov/codecov-action@v2.1.0

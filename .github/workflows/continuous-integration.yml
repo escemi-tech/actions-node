@@ -19,7 +19,7 @@ jobs:
         with:
           build: false
           checks: true
-          # FIXME: https://github.com/actions/runner/issues/834 (code-ql: false)
+          code-ql: false
           test: false
           coverage: false
 
@@ -40,6 +40,7 @@ jobs:
 
       - name: 📖 Generate README
         uses: bitflight-devops/github-action-readme-generator@v1.0.12a
+
       - run: cp README.md /tmp/publish/index.md
 
       - name: 🌐 Publish Github pages

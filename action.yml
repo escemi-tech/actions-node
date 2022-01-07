@@ -145,7 +145,7 @@ runs:
 
     - name: 🏗️ Build
       shell: bash
-      if: steps.prepare-build.command
+      if: inputs.build != 'false' && steps.prepare-build.command
       env: ${{ fromJSON(steps.prepare-build.outputs.env) }}
       run: yarn ${{ steps.prepare-build.outputs.command }}
 

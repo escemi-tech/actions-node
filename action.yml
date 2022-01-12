@@ -66,7 +66,7 @@ runs:
       run: echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
 
     - name: ♻️ Gatsby cache
-      if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby
+      if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'
       uses: actions/cache@v2.1.7
       id: gatsby-cache
       with:

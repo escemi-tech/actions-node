@@ -36,21 +36,14 @@ runs:
       with:
         token: ${{ inputs.checkout-token }}
 
-    - id: nvm
-      shell: bash
-      run: echo ::set-output name=NVMRC::$(cat .nvmrc)
-
-    - uses: actions/setup-node@v2.4.0
+    - uses: actions/setup-node@v2.5.1
       id: setup-node
       with:
-        node-version: "${{ steps.nvm.outputs.NVMRC }}"
+        node-version-file: ".nvmrc"
         cache: ${{ inputs.package-manager }}
         cache-dependency-path: "**/yarn.lock"
-      env:
-        ACTIONS_RUNNER_DEBUG: "true"
 
     - name: ⚙️ Install Dependencies
-      if: steps.setup-node.outputs.cache-hit != 'true'
       shell: bash
       run: yarn install --frozen-lockfile;
 
@@ -74,7 +67,7 @@ runs:
 
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       id: gatsby-cache
       with:
         path: |
@@ -99,7 +92,7 @@ runs:
         fi
 
         # Pure string
-        if echo "$BUILD_INPUT" | grep -c "^[_:a-zA-Z0-9]\+$" > /dev/null; then            
+        if echo "$BUILD_INPUT" | grep -c "^[_:a-zA-Z0-9]\+$" > /dev/null; then
             echo ::set-output name=env::{}
 
             BUILD_COMMAND=$( echo "\"$BUILD_INPUT\"" | jq '.' )
@@ -145,7 +138,7 @@ runs:
 
     - name: 🏗️ Build
       shell: bash
-      if: inputs.build != 'false' && steps.prepare-build.command
+      if: inputs.build != 'false' && steps.prepare-build.outputs.command
       env: ${{ fromJSON(steps.prepare-build.outputs.env) }}
       run: yarn ${{ steps.prepare-build.outputs.command }}
 
@@ -159,7 +152,7 @@ runs:
 
     - name: ♻️ Test cache
       if: inputs.checks == 'true' && inputs.test == 'true'
-      uses: actions/cache@v2.1.6
+      uses: actions/cache@v2.1.7
       with:
         path: ${{ steps.jest-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-test-${{ github.sha }}

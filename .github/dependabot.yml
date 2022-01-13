@@ -6,3 +6,11 @@ updates:
       interval: weekly
       day: friday
       time: "04:00"
+  - package-ecosystem: npm
+    open-pull-requests-limit: 20
+    versioning-strategy: increase
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: friday
+      time: "04:00"

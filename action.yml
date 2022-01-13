@@ -65,7 +65,7 @@ runs:
       shell: bash
       run: |
         echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
-        echo ::set-output name=storybook::$([[ `yarn list --pattern "storybook" --depth=1 | grep grep " @storybook/[-a-z]*@"` ]] && echo "true" || echo "false")
+        echo ::set-output name=storybook::$([[ `yarn list --pattern "storybook" --depth=1 | grep " @storybook/[-a-z]*@"` ]] && echo "true" || echo "false")
 
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'

@@ -63,7 +63,9 @@ runs:
     - id: yarn-installed-packages
       if: inputs.build != 'false'
       shell: bash
-      run: echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
+      run: |
+        echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
+        echo ::set-output name=storybook::$([[ `yarn list --pattern "storybook" --depth=1 | grep grep " @storybook/[-a-z]*@"` ]] && echo "true" || echo "false")
 
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'
@@ -76,6 +78,16 @@ runs:
         key: ${{ runner.os }}-cache-gatsby-${{ github.sha }}
         restore-keys: |
           ${{ runner.os }}-cache-gatsby-
+
+    - name: ♻️ Storybook cache
+      if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.storybook == 'true'
+      uses: actions/cache@v2.1.7
+      id: storybook-cache
+      with:
+        path: node_modules/.cache/storybook
+        key: ${{ runner.os }}-cache-storybook-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-cache-storybook-
 
     - id: prepare-build
       if: inputs.build != 'false'

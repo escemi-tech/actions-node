@@ -70,8 +70,8 @@ Composite Github Action to provides opinionated NodeJS steps
   See https://github.com/github/codeql-action
 
 - Build:
-  if `build` is enabled.
-  Handle gatsby cache if gastby is installed.
+  if `build` is enabled. \
+  Handle gatsby cache if gastby is installed. \
   Handle storybook cache if storybook is installed.
 
 - Lint:

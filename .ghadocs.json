@@ -3,15 +3,15 @@
     "action": "action.yml",
     "readme": "README.md"
   },
-  "show_logo": "true",
+  "show_logo": "",
   "versioning": {
-    "enabled": "true",
+    "enabled": "",
     "override": "",
     "prefix": "v",
     "branch": "main"
   },
   "owner": "escemi-tech",
   "repo": "actions-node",
-  "title_prefix": "GitHub Action: ",
-  "pretty": "true"
+  "title_prefix": "GitHub Action:",
+  "pretty": ""
 }

@@ -1,6 +1,6 @@
 <!-- start title -->
 
-# GitHub Action: Node steps
+# GitHub Action:Node steps
 
 <!-- end title -->
 
@@ -17,9 +17,13 @@ Composite Github Action to provides opinionated NodeJS steps
 <!-- start usage -->
 
 ```yaml
-- uses: escemi-tech/actions-node@
+- uses: escemi-tech/actions-node@main
   with:
-    # Used to specify a package managerµ. Supported values: 'yarn'
+    # Token used by checkout. See https://github.com/actions/checkout
+    # Default: ${{ github.token }}
+    checkout-token: ""
+
+    # Used to specify a package manager. Supported values: 'yarn'
     # Default: yarn
     package-manager: ""
 
@@ -68,7 +72,7 @@ Composite Github Action to provides opinionated NodeJS steps
 - Build:
   if `build` is enabled. \
   Handle gatsby cache if gastby is installed. \
-  Handle storybook cache if storybook is installed. 
+  Handle storybook cache if storybook is installed.
 
 - Lint:
   If `checks` and `lint` are enabled.
@@ -87,15 +91,16 @@ See [action.yml](action.yml)
 
 <!-- start inputs -->
 
-| **Input**             | **Description**                                                                        | **Default**  | **Required** |
-| :-------------------- | :------------------------------------------------------------------------------------- | :----------: | :----------: |
-| **`package-manager`** | Used to specify a package managerµ. Supported values: 'yarn'                           |    `yarn`    |  **false**   |
-| **`build`**           | Build parameters.                                                                      |   `build`    |  **false**   |
-| **`checks`**          | Optional flag to enable check steps.                                                   |              |  **false**   |
-| **`lint`**            | Optional flag to enable linting                                                        |    `true`    |  **false**   |
-| **`code-ql`**         | Code QL analysis language. See https://github.com/github/codeql-action                 | `typescript` |  **false**   |
-| **`test`**            | Optional flag to enable test. See https://github.com/github/codeql-action              |    `true`    |  **false**   |
-| **`coverage`**        | Optional flag to enable coverage report. See https://github.com/codecov/codecov-action |    `true`    |  **false**   |
+| **Input**             | **Description**                                                                        |      **Default**      | **Required** |
+| :-------------------- | :------------------------------------------------------------------------------------- | :-------------------: | :----------: |
+| **`checkout-token`**  | Token used by checkout. See https://github.com/actions/checkout                        | `${{ github.token }}` |  **false**   |
+| **`package-manager`** | Used to specify a package manager. Supported values: 'yarn'                            |        `yarn`         |  **false**   |
+| **`build`**           | Build parameters.                                                                      |        `build`        |  **false**   |
+| **`checks`**          | Optional flag to enable check steps.                                                   |                       |  **false**   |
+| **`lint`**            | Optional flag to enable linting                                                        |        `true`         |  **false**   |
+| **`code-ql`**         | Code QL analysis language. See https://github.com/github/codeql-action                 |     `typescript`      |  **false**   |
+| **`test`**            | Optional flag to enable test. See https://github.com/github/codeql-action              |        `true`         |  **false**   |
+| **`coverage`**        | Optional flag to enable coverage report. See https://github.com/codecov/codecov-action |        `true`         |  **false**   |
 
 <!-- end inputs -->
 

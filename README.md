@@ -68,6 +68,7 @@ Composite Github Action to provides opinionated NodeJS steps
 - Build:
   if `build` is enabled.
   Handle gatsby cache if gastby is installed.
+  Handle storybook cache if storybook is installed.
 
 - Lint:
   If `checks` and `lint` are enabled.

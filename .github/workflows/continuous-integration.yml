@@ -45,12 +45,15 @@ jobs:
           echo `git add -A && git commit -m "chore: prepare release"`
           git push --follow-tags origin ${{ github.event.repository.default_branch }}
           
-          mkdir -p /tmp/publish
+          mkdir -p /tmp/publish          
+          echo "theme: jekyll-theme-cayman" > /tmp/publish/_config.yml
           cp README.md /tmp/publish/index.md
 
       - name: 🌐 Publish Github pages
         uses: peaceiris/actions-gh-pages@v3.8.0
         with:
+          enable_jekyll: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: /tmp/publish
-          enable_jekyll: true
+          user_name: ${{ github.actor }}
+          user_email: ${{ github.actor }}@users.noreply.github.com

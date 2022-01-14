@@ -5,8 +5,8 @@ on:
     branches:
       - main
   pull_request:
-    paths-ignore:
-      - "**.md"
+    branches:
+      - main
 
 jobs:
   continuous-integration:
@@ -34,14 +34,18 @@ jobs:
       - name: 🔖 Configure publish
         run: |
           git config --local user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --local user.name "${{ github.actor }}"
+          git config --local user.name "${{ github.actor }}"          
           git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/$GITHUB_REPOSITORY
-          mkdir -p /tmp/publish
 
       - name: 📖 Generate README
         uses: bitflight-devops/github-action-readme-generator@v1.0.12a
 
-      - run: cp README.md /tmp/publish/index.md
+      - run: |
+          echo `git add -A && git commit -m "chore: prepare release"`
+          git push --follow-tags origin ${{ github.event.repository.default_branch }}
+          
+          mkdir -p /tmp/publish
+          cp README.md /tmp/publish/index.md
 
       - name: 🌐 Publish Github pages
         uses: peaceiris/actions-gh-pages@v3.8.0

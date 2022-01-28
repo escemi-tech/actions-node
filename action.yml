@@ -1,7 +1,7 @@
 name: "Node steps"
 description: "Composite Github Action to provides opinionated NodeJS steps"
 branding:
-  icon: "hexagon"
+  icon: "box"
   color: "green"
 
 inputs:

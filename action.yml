@@ -44,19 +44,22 @@ runs:
 
         # Checkout input must a JSON object
         if echo "$CHECKOUT_INPUT" | jq 'type == "object"' | grep -c "true" > /dev/null; then
-            CHECKOUT_TOKEN=$( echo "$CHECKOUT_INPUT" | jq ' . | if has("token") then .token else "" end' )
-            [[ -z "${CHECKOUT_TOKEN}" ]] && echo ::set-output name=token::$CHECKOUT_TOKEN
+            CHECKOUT_TOKEN=$( echo "$CHECKOUT_INPUT" | jq -r ' . | if has("token") then .token else "" end' )
+            if [ ! -z "${CHECKOUT_TOKEN}" ]; then
+              echo "::debug::Checkout token has been provided"
+              echo "::set-output name=token::$CHECKOUT_TOKEN"
+            fi
 
             exit 0;
         fi
 
         echo -e "Given \"checkout\" input is not a valid JSON object.\n$CHECKOUT_INPUT"
-        exit 1;
+        exit 1
 
     - uses: actions/checkout@v2
       if: inputs.checkout != 'false'
       with:
-        token: ${{ steps.prepare-checkout.outputs.token }} || ${{ github.token }}
+        token: ${{ steps.prepare-checkout.outputs.token || github.token }}
 
     - uses: actions/setup-node@v2.5.1
       id: setup-node
@@ -131,9 +134,9 @@ runs:
 
             BUILD_COMMAND=$( echo "\"$BUILD_INPUT\"" | jq '.' )
             if [ "$BUILD_COMMAND" == \""false\"" ]; then
-              echo ::set-output name=command::
+              echo "::set-output name=command::"
             else
-              echo ::set-output name=command::$BUILD_COMMAND
+              echo "::set-output name=command::$BUILD_COMMAND"
             fi
 
             exit 0;
@@ -149,8 +152,8 @@ runs:
         if echo "$BUILD_INPUT" | jq 'type == "string"' | grep -c "true" > /dev/null; then
 
             BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq '.' )
-            echo ::set-output name=command::$BUILD_COMMAND
-            echo ::set-output name=env::{}
+            echo "::set-output name=command::$BUILD_COMMAND"
+            echo "::set-output name=env::{}"
             exit 0;
 
         fi

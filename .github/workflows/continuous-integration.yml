@@ -31,8 +31,10 @@ jobs:
     environment: github-pages
     steps:
       - uses: actions/checkout@v2
+      - uses: ./
         with:
-          token: ${{ secrets.GH_PRIVATE_ACCESS_TOKEN }}
+          build: false
+          checkout: '{ "token": "${{ secrets.GH_PRIVATE_ACCESS_TOKEN }}" }'
 
       - name: 🔖 Configure publish
         run: |

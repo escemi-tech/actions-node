@@ -55,7 +55,8 @@ Composite Github Action to provides opinionated NodeJS steps
 
 ## Steps
 
-- Checkout
+- Checkout:
+  if `checkout` is enabled
   See: https://github.com/actions/checkout
 
 - Setup Node.js:
@@ -106,13 +107,33 @@ See [action.yml](action.yml)
 
 ### Examples
 
+### `checkout`:
+
+#### It can be a json object to specify the token to be used. Example:
+
+```yml
+steps:
+  - uses: escemi-tech/actions-node@main
+    with:
+      checkout: '{ "token": "${{ secrets.GH_PRIVATE_ACCESS_TOKEN }}" }'
+```
+
+#### It can be a false to disabliing checkout. Example:
+
+```yml
+steps:
+  - uses: escemi-tech/actions-node@main
+    with:
+      checkout: false
+```
+
 ### `build`:
 
 #### It can be a string to specify the script to run. Example:
 
 ```yml
 steps:
-  - uses: escemi-tech/actions-node@v1.0.0
+  - uses: escemi-tech/actions-node@main
     with:
       build: "build:prod"
 ```
@@ -121,7 +142,7 @@ steps:
 
 ```yml
 steps:
-  - uses: escemi-tech/actions-node@v1.0.0
+  - uses: escemi-tech/actions-node@main
     with:
       build: |
         ${{ toJson(fromJson('{

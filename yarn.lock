@@ -247,7 +247,7 @@ is-plain-object@^5.0.0:
   resolved "https://registry.yarnpkg.com/is-plain-object/-/is-plain-object-5.0.0.tgz#4427f50ab3429e9025ea7d52e9043a9ef4159344"
   integrity sha512-VRSzKkbMm5jMDoKLbltAkFQ5Qr7VDiTFGXxYFXXowVj387GeGNOCsOH6Msy00SGZ3Fp84b1Naa1psqgcCIEP5Q==
 
-js-yaml@^4.0.0, js-yaml@^4.1.0:
+js-yaml@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
   integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
@@ -432,13 +432,13 @@ y18n@^5.0.5:
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-5.0.8.tgz#7f4934d0f7ca8c56f95314939ddcd2dd91ce1d55"
   integrity sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==
 
-yaml-validator@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/yaml-validator/-/yaml-validator-3.0.1.tgz#9fb47251a003b22765fc562926a33901670aa944"
-  integrity sha512-6mLR0UJ8P044TkgUYQyGbNXCUE/Ic5sY5qjy+5T1a/l5ur8tQe8n6MMtASuNvLwq1C2GFS/cD7l5iuGHHX2U0g==
+yaml-validator@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/yaml-validator/-/yaml-validator-4.0.0.tgz#4d8872ffd366161f7876c51d137f2e24c68eef4f"
+  integrity sha512-WuD6IsuLYgL/6gaaD/Q1vsRLj7MMBoxvieNRFKALaVUOExcKIfgIpOJVVoVDIR8nfYQylNjCt6nr9MxWDjWLLg==
   dependencies:
     check-type "^0.4.11"
-    js-yaml "^4.0.0"
+    js-yaml "^4.1.0"
     optionator "^0.9.1"
 
 yargs-parser@^20.2.2:

@@ -5,14 +5,14 @@ branding:
   color: "green"
 
 inputs:
-  checkout-token:
-    description: "Token used by checkout. See https://github.com/actions/checkout"
-    default: ${{ github.token }}
+  checkout:
+    description: Checkout parameters. Must be a json object. See https://github.com/actions/checkout
+    default: "{ }"
   package-manager:
     description: "Used to specify a package manager. Supported values: 'yarn'"
     default: "yarn"
   build:
-    description: Build parameters.
+    description: Build parameters. Must be a string or a json object.
     default: "build"
   checks:
     description: "Optional flag to enable check steps."
@@ -32,9 +32,31 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - id: prepare-checkout
+      if: inputs.checkout != 'false'
+      shell: bash
+      run: |
+        CHECKOUT_INPUT=$(cat <<-END
+            ${{ inputs.checkout }}
+        END
+        )
+        CHECKOUT_INPUT=$(echo $CHECKOUT_INPUT | sed 's/ *$//g')
+
+        # Checkout input must a JSON object
+        if echo "$CHECKOUT_INPUT" | jq 'type == "object"' | grep -c "true" > /dev/null; then
+            CHECKOUT_TOKEN=$( echo "$CHECKOUT_INPUT" | jq ' . | if has("token") then .token else "" end' )
+            [[ -z "${CHECKOUT_TOKEN}" ]] && echo ::set-output name=token::$CHECKOUT_TOKEN
+
+            exit 0;
+        fi
+
+        echo -e "Given \"checkout\" input is not a valid JSON object.\n$CHECKOUT_INPUT"
+        exit 1;
+
     - uses: actions/checkout@v2
+      if: inputs.checkout != 'false'
       with:
-        token: ${{ inputs.checkout-token }}
+        token: ${{ steps.prepare-checkout.outputs.token }} || ${{ github.token }}
 
     - uses: actions/setup-node@v2.5.1
       id: setup-node

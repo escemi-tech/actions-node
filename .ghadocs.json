@@ -5,7 +5,7 @@
   },
   "show_logo": "",
   "versioning": {
-    "enabled": true,
+    "enabled": "",
     "override": "",
     "prefix": "v",
     "branch": "main"

@@ -144,12 +144,7 @@ steps:
 steps:
   - uses: escemi-tech/actions-node@main
     with:
-      build: |
-        ${{ toJson(fromJson('{
-          "env": {
-            "NODE_ENV": "production"
-          }
-        }')) }}
+      build: '{ "env": { "NODE_ENV": "production" } }'
 ```
 
 <!-- start outputs -->

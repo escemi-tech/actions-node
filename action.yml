@@ -40,23 +40,23 @@ runs:
             ${{ inputs.checkout }}
         END
         )
-        CHECKOUT_INPUT=$(echo $CHECKOUT_INPUT | sed 's/ *$//g')
+        CHECKOUT_INPUT=$(echo $CHECKOUT_INPUT | sed 's/ *$//g');
 
         # Checkout input must a JSON object
         if echo "$CHECKOUT_INPUT" | jq 'type == "object"' | grep -c "true" > /dev/null; then
-            CHECKOUT_TOKEN=$( echo "$CHECKOUT_INPUT" | jq -r ' . | if has("token") then .token else "" end' )
+            CHECKOUT_TOKEN=$( echo "$CHECKOUT_INPUT" | jq -r ' . | if has("token") then .token else "" end' );
             if [ ! -z "${CHECKOUT_TOKEN}" ]; then
-              echo "::debug::Checkout token has been provided"
-              echo "::set-output name=token::$CHECKOUT_TOKEN"
+              echo "::debug::Checkout token has been provided";
+              echo "::set-output name=token::$CHECKOUT_TOKEN";
             fi
 
             exit 0;
         fi
 
-        echo -e "Given \"checkout\" input is not a valid JSON object.\n$CHECKOUT_INPUT"
-        exit 1
+        echo -e "Given \"checkout\" input is not a valid JSON object.\n$CHECKOUT_INPUT";
+        exit 1;
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v3.0.0
       if: inputs.checkout != 'false'
       with:
         token: ${{ steps.prepare-checkout.outputs.token || github.token }}
@@ -94,7 +94,7 @@ runs:
 
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'
-      uses: actions/cache@v3
+      uses: actions/cache@v3.0.0
       id: gatsby-cache
       with:
         path: |
@@ -106,7 +106,7 @@ runs:
 
     - name: ♻️ Storybook cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.storybook == 'true'
-      uses: actions/cache@v3
+      uses: actions/cache@v3.0.0
       id: storybook-cache
       with:
         path: node_modules/.cache/storybook
@@ -115,14 +115,15 @@ runs:
           ${{ runner.os }}-cache-storybook-
 
     - id: prepare-build
-      if: inputs.build != 'false'
       shell: bash
       run: |
         BUILD_INPUT=$(cat <<-END
             ${{ inputs.build }}
         END
         )
-        BUILD_INPUT=$(echo $BUILD_INPUT | sed 's/ *$//g')
+        BUILD_INPUT=$(echo $BUILD_INPUT | sed 's/ *$//g');
+
+        echo "::set-output name=env::{}";
 
         if [ -z "$BUILD_INPUT" ]; then
             exit 0;
@@ -130,13 +131,12 @@ runs:
 
         # Pure string
         if echo "$BUILD_INPUT" | grep -c "^[_:a-zA-Z0-9]\+$" > /dev/null; then
-            echo ::set-output name=env::{}
 
             BUILD_COMMAND=$( echo "\"$BUILD_INPUT\"" | jq '.' )
             if [ "$BUILD_COMMAND" == \""false\"" ]; then
-              echo "::set-output name=command::"
+              echo "::set-output name=command::";
             else
-              echo "::set-output name=command::$BUILD_COMMAND"
+              echo "::set-output name=command::$BUILD_COMMAND";
             fi
 
             exit 0;
@@ -144,16 +144,15 @@ runs:
 
         CHECK_JSON=$( { echo "$BUILD_INPUT" | jq empty; } 2>&1 )
         if [ ! $? -eq 0 ] ; then
-            echo -e "Given \"build\" input is not a valid JSON string: $CHECK_JSON.\n\"$BUILD_INPUT\""
+            echo -e "Given \"build\" input is not a valid JSON string: $CHECK_JSON.\n\"$BUILD_INPUT\"";
             exit 1;
         fi
 
         # Build input is a JSON string
         if echo "$BUILD_INPUT" | jq 'type == "string"' | grep -c "true" > /dev/null; then
 
-            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq '.' )
-            echo "::set-output name=command::$BUILD_COMMAND"
-            echo "::set-output name=env::{}"
+            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq '.' );
+            echo "::set-output name=command::$BUILD_COMMAND";
             exit 0;
 
         fi
@@ -161,16 +160,16 @@ runs:
         # Build input is a JSON object
         if echo "$BUILD_INPUT" | jq 'type == "object"' | grep -c "true" > /dev/null; then
 
-            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq ' . | if has("command") then .command else "build" end' )
-            echo ::set-output name=command::$BUILD_COMMAND
+            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq ' . | if has("command") then .command else "build" end' );
+            echo "::set-output name=command::$BUILD_COMMAND";
 
-            BUILD_ENV=$( echo "$BUILD_INPUT" | jq ' . | if has("env") then .env else {} end' )
-            echo ::set-output name=env::$BUILD_ENV
+            BUILD_ENV=$( echo "$BUILD_INPUT" | jq ' . | if has("env") then .env else {} end' );
+            echo "::set-output name=env::$BUILD_ENV";
             exit 0;
 
         fi
 
-        echo -e "Given \"build\" input is not a string nor an object.\n$BUILD_INPUT"
+        echo -e "Given \"build\" input is not a string nor an object.\n$BUILD_INPUT";
         exit 1;
 
     - name: 🏗️ Build
@@ -189,7 +188,7 @@ runs:
 
     - name: ♻️ Test cache
       if: inputs.checks == 'true' && inputs.test == 'true'
-      uses: actions/cache@v3
+      uses: actions/cache@v3.0.0
       with:
         path: ${{ steps.jest-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-test-${{ github.sha }}

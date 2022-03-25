@@ -56,7 +56,7 @@ runs:
         echo -e "Given \"checkout\" input is not a valid JSON object.\n$CHECKOUT_INPUT"
         exit 1
 
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       if: inputs.checkout != 'false'
       with:
         token: ${{ steps.prepare-checkout.outputs.token || github.token }}

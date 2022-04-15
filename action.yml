@@ -94,7 +94,7 @@ runs:
 
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'
-      uses: actions/cache@v3.0.1
+      uses: actions/cache@v3.0.2
       id: gatsby-cache
       with:
         path: |
@@ -106,7 +106,7 @@ runs:
 
     - name: ♻️ Storybook cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.storybook == 'true'
-      uses: actions/cache@v3.0.1
+      uses: actions/cache@v3.0.2
       id: storybook-cache
       with:
         path: node_modules/.cache/storybook
@@ -188,7 +188,7 @@ runs:
 
     - name: ♻️ Test cache
       if: inputs.checks == 'true' && inputs.test == 'true'
-      uses: actions/cache@v3.0.1
+      uses: actions/cache@v3.0.2
       with:
         path: ${{ steps.jest-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-test-${{ github.sha }}

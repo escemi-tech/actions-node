@@ -42,7 +42,7 @@ jobs:
           git config --local user.name "${{ github.actor }}"
 
       - name: 📖 Generate README
-        uses: bitflight-devops/github-action-readme-generator@v1.0.12a
+        uses: bitflight-devops/github-action-readme-generator@v1.0.13
 
       - run: |
           echo `git add -A && git commit -m "chore: prepare release"`

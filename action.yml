@@ -79,10 +79,10 @@ runs:
 
     - name: 🛡️ CodeQL Analysis
       if: inputs.checks == 'true' && inputs.code-ql != 'false'
-      uses: github/codeql-action/init@v2.1.8
+      uses: github/codeql-action/init@v2.1.9
       with:
         languages: ${{ inputs.code-ql }}
-    - uses: github/codeql-action/analyze@v2.1.8
+    - uses: github/codeql-action/analyze@v2.1.9
       if: inputs.checks == 'true' && inputs.code-ql != 'false'
 
     - id: yarn-installed-packages

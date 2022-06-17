@@ -72,6 +72,24 @@ runs:
       shell: bash
       run: yarn install --frozen-lockfile;
 
+    - id: yarn-installed-packages
+      if: inputs.build != 'false'
+      shell: bash
+      run: |
+        echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
+        echo ::set-output name=storybook::$([[ `yarn list --pattern "storybook" --depth=1 | grep " @storybook/[-a-z]*@"` ]] && echo "true" || echo "false")
+        echo ::set-output name=prettier::$([[ `yarn list --pattern "prettier" --depth=1 | grep " prettier@"` ]] && echo "true" || echo "false")
+
+    - name: ♻️ Prettier cache
+      if: inputs.checks == 'true' && inputs.lint == 'true' && steps.yarn-installed-packages.outputs.prettier == 'true'
+      uses: actions/cache@v3.0.4
+      id: prettier-cache
+      with:
+        path: node_modules/.cache/prettier
+        key: ${{ runner.os }}-cache-prettier-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-cache-prettier-
+
     - name: 👕 Lint
       if: inputs.checks == 'true' && inputs.lint == 'true'
       shell: bash
@@ -84,13 +102,6 @@ runs:
         languages: ${{ inputs.code-ql }}
     - uses: github/codeql-action/analyze@v2.1.12
       if: inputs.checks == 'true' && inputs.code-ql != 'false'
-
-    - id: yarn-installed-packages
-      if: inputs.build != 'false'
-      shell: bash
-      run: |
-        echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
-        echo ::set-output name=storybook::$([[ `yarn list --pattern "storybook" --depth=1 | grep " @storybook/[-a-z]*@"` ]] && echo "true" || echo "false")
 
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'

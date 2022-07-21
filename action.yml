@@ -34,27 +34,28 @@ runs:
   steps:
     - id: prepare-checkout
       if: inputs.checkout != 'false'
-      shell: bash
-      run: |
-        CHECKOUT_INPUT=$(cat <<-END
-            ${{ inputs.checkout }}
-        END
-        )
-        CHECKOUT_INPUT=$(echo $CHECKOUT_INPUT | sed 's/ *$//g');
+      uses: actions/github-script@v6.1.0
+      with:
+        script: |
+          const checkoutInput = `${{ inputs.checkout }}`;
+          core.debug(`Provided "checkout" input: ${checkoutInput}`);
 
-        # Checkout input must a JSON object
-        if echo "$CHECKOUT_INPUT" | jq 'type == "object"' | grep -c "true" > /dev/null; then
-            CHECKOUT_TOKEN=$( echo "$CHECKOUT_INPUT" | jq -r ' . | if has("token") then .token else "" end' );
-            if [ ! -z "${CHECKOUT_TOKEN}" ]; then
-              echo "::debug::Checkout token has been provided";
-              echo "::set-output name=token::$CHECKOUT_TOKEN";
-            fi
+          if(!checkoutInput){
+            core.setFailed(`Input "checkout" is empty`);
+            return;
+          }
 
-            exit 0;
-        fi
+          const checkoutParams = JSON.parse(checkoutInput);
 
-        echo -e "Given \"checkout\" input is not a valid JSON object.\n$CHECKOUT_INPUT";
-        exit 1;
+          if(typeof checkoutParams !== 'object'){
+            core.setFailed('Given "checkout" input is not a valid JSON object.');
+            return;
+          }
+
+          if(checkoutParams.token){
+            core.info('Checkout token has been provided');
+            core.setOutput('token', checkoutParams.token);
+          }
 
     - uses: actions/checkout@v3.0.2
       if: inputs.checkout != 'false'
@@ -126,62 +127,41 @@ runs:
           ${{ runner.os }}-cache-storybook-
 
     - id: prepare-build
-      shell: bash
-      run: |
-        BUILD_INPUT=$(cat <<-END
-            ${{ inputs.build }}
-        END
-        )
-        BUILD_INPUT=$(echo $BUILD_INPUT | sed 's/ *$//g');
+      uses: actions/github-script@v6.1.0
+      with:
+        script: |
+          const buildInput = `${{ inputs.build }}`;
+          core.debug(`Provided "build" input: ${buildInput}`);
 
-        echo "::set-output name=env::{}";
+          core.setOutput('env', {});
+          core.setOutput('command', null);
 
-        if [ -z "$BUILD_INPUT" ]; then
-            exit 0;
-        fi
+          if(!buildInput || buildInput === 'false'){
+            return;
+          }
 
-        # Pure string
-        if echo "$BUILD_INPUT" | grep -c "^[_:a-zA-Z0-9]\+$" > /dev/null; then
+          const isJsonString = (str)  => { try { JSON.parse(str); return true; } catch (e) { return false; }};
 
-            BUILD_COMMAND=$( echo "\"$BUILD_INPUT\"" | jq '.' )
-            if [ "$BUILD_COMMAND" == \""false\"" ]; then
-              echo "::set-output name=command::";
-            else
-              echo "::set-output name=command::$BUILD_COMMAND";
-            fi
+          if(!isJsonString(buildInput)){
+            core.info('Build command has been provided');
+            core.setOutput('command', buildInput);
+            return;
+          }
 
-            exit 0;
-        fi
+          const buildParams = JSON.parse(buildInput);
+          if(typeof buildParams === 'object'){
+            if(buildParams.command){
+              core.info('Build command has been provided');
+              core.setOutput('command', buildParams.command);
+            }
+            if(buildParams.env){
+              core.info('Build env has been provided');
+              core.setOutput('env', buildParams.env);
+            }
+            return;
+          }
 
-        CHECK_JSON=$( { echo "$BUILD_INPUT" | jq empty; } 2>&1 )
-        if [ ! $? -eq 0 ] ; then
-            echo -e "Given \"build\" input is not a valid JSON string: $CHECK_JSON.\n\"$BUILD_INPUT\"";
-            exit 1;
-        fi
-
-        # Build input is a JSON string
-        if echo "$BUILD_INPUT" | jq 'type == "string"' | grep -c "true" > /dev/null; then
-
-            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq '.' );
-            echo "::set-output name=command::$BUILD_COMMAND";
-            exit 0;
-
-        fi
-
-        # Build input is a JSON object
-        if echo "$BUILD_INPUT" | jq 'type == "object"' | grep -c "true" > /dev/null; then
-
-            BUILD_COMMAND=$( echo "$BUILD_INPUT" | jq ' . | if has("command") then .command else "build" end' );
-            echo "::set-output name=command::$BUILD_COMMAND";
-
-            BUILD_ENV=$( echo "$BUILD_INPUT" | jq ' . | if has("env") then .env else {} end' );
-            echo "::set-output name=env::$BUILD_ENV";
-            exit 0;
-
-        fi
-
-        echo -e "Given \"build\" input is not a string nor an object.\n$BUILD_INPUT";
-        exit 1;
+          core.setFailed('Given \"build\" input is not a string nor a JSON object.');
 
     - name: 🏗️ Build
       shell: bash

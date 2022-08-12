@@ -1,6 +1,6 @@
 <!-- start title -->
 
-# GitHub Action:Node steps
+# GitHub Action: Node steps
 
 <!-- end title -->
 
@@ -17,7 +17,7 @@ Composite Github Action to provides opinionated NodeJS steps
 <!-- start usage -->
 
 ```yaml
-- uses: escemi-tech/actions-node@main
+- uses: /@main
   with:
     # Checkout parameters. Must be a json object. See https://github.com/actions/checkout
     # Default: { }
@@ -92,16 +92,16 @@ See [action.yml](action.yml)
 
 <!-- start inputs -->
 
-| **Input**             | **Description**                                                                        | **Default**  | **Required** |
-| :-------------------- | :------------------------------------------------------------------------------------- | :----------: | :----------: |
-| **`checkout`**        | Checkout parameters. Must be a json object. See https://github.com/actions/checkout    |    `{ }`     |  **false**   |
-| **`package-manager`** | Used to specify a package manager. Supported values: 'yarn'                            |    `yarn`    |  **false**   |
-| **`build`**           | Build parameters. Must be a string or a json object.                                   |   `build`    |  **false**   |
-| **`checks`**          | Optional flag to enable check steps.                                                   |              |  **false**   |
-| **`lint`**            | Optional flag to enable linting                                                        |    `true`    |  **false**   |
-| **`code-ql`**         | Code QL analysis language. See https://github.com/github/codeql-action                 | `typescript` |  **false**   |
-| **`test`**            | Optional flag to enable test. See https://github.com/github/codeql-action              |    `true`    |  **false**   |
-| **`coverage`**        | Optional flag to enable coverage report. See https://github.com/codecov/codecov-action |    `true`    |  **false**   |
+| **Input**                        | **Description**                                                                        | **Default**             | **Required** |
+| -------------------------------- | -------------------------------------------------------------------------------------- | ----------------------- | ------------ |
+| **<code>checkout</code>**        | Checkout parameters. Must be a json object. See https://github.com/actions/checkout    | <code>{ }</code>        | **false**    |
+| **<code>package-manager</code>** | Used to specify a package manager. Supported values: 'yarn'                            | <code>yarn</code>       | **false**    |
+| **<code>build</code>**           | Build parameters. Must be a string or a json object.                                   | <code>build</code>      | **false**    |
+| **<code>checks</code>**          | Optional flag to enable check steps.                                                   |                         | **false**    |
+| **<code>lint</code>**            | Optional flag to enable linting                                                        | <code>true</code>       | **false**    |
+| **<code>code-ql</code>**         | Code QL analysis language. See https://github.com/github/codeql-action                 | <code>typescript</code> | **false**    |
+| **<code>test</code>**            | Optional flag to enable test. See https://github.com/github/codeql-action              | <code>true</code>       | **false**    |
+| **<code>coverage</code>**        | Optional flag to enable coverage report. See https://github.com/codecov/codecov-action | <code>true</code>       | **false**    |
 
 <!-- end inputs -->
 

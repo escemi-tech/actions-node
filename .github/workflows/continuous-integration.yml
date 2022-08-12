@@ -37,7 +37,7 @@ jobs:
           checkout: '{ "token": "${{ secrets.GH_PRIVATE_ACCESS_TOKEN }}" }'
 
       - name: 📖 Generate README
-        uses: bitflight-devops/github-action-readme-generator@v1.1.5
+        uses: bitflight-devops/github-action-readme-generator@v1.3.9
 
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:

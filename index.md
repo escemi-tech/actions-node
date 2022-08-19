@@ -17,7 +17,7 @@ Composite Github Action to provides opinionated NodeJS steps
 <!-- start usage -->
 
 ```yaml
-- uses: /@main
+- uses: escemi-tech/actions-node@main
   with:
     # Checkout parameters. Must be a json object. See https://github.com/actions/checkout
     # Default: { }

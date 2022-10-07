@@ -34,7 +34,7 @@ runs:
   steps:
     - id: prepare-checkout
       if: inputs.checkout != 'false'
-      uses: actions/github-script@v6.3.0
+      uses: actions/github-script@v6.3.1
       with:
         script: |
           const checkoutInput = `${{ inputs.checkout }}`;
@@ -127,7 +127,7 @@ runs:
           ${{ runner.os }}-cache-storybook-
 
     - id: prepare-build
-      uses: actions/github-script@v6.3.0
+      uses: actions/github-script@v6.3.1
       with:
         script: |
           const buildInput = `${{ inputs.build }}`;

@@ -62,7 +62,7 @@ runs:
       with:
         token: ${{ steps.prepare-checkout.outputs.token || github.token }}
 
-    - uses: actions/setup-node@v3.5.0
+    - uses: actions/setup-node@v3.5.1
       id: setup-node
       with:
         node-version-file: ".nvmrc"

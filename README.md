@@ -6,7 +6,7 @@
 
 <!-- start description -->
 
-Composite Github Action to provides opinionated NodeJS steps forto performs Continuous Integration
+Composite Github Action to provides opinionated NodeJS steps to performs Continuous Integration
 
 <!-- end description -->
 <!-- start contents -->

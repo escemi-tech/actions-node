@@ -1,5 +1,5 @@
 name: "NodeJS Continuous Integration steps"
-description: "Composite Github Action to provides opinionated NodeJS steps forto performs Continuous Integration"
+description: "Composite Github Action to provides opinionated NodeJS steps to performs Continuous Integration"
 branding:
   icon: "box"
   color: "green"

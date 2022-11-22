@@ -1,5 +1,5 @@
-name: "Node steps"
-description: "Composite Github Action to provides opinionated NodeJS steps"
+name: "NodeJS Continuous Integration steps"
+description: "Composite Github Action to provides opinionated NodeJS steps forto performs Continuous Integration"
 branding:
   icon: "box"
   color: "green"
@@ -18,16 +18,16 @@ inputs:
     description: "Optional flag to enable check steps."
   lint:
     description: "Optional flag to enable linting"
-    default: true
+    default: "true"
   code-ql:
     description: "Code QL analysis language. See https://github.com/github/codeql-action"
     default: "typescript"
   test:
     description: "Optional flag to enable test. See https://github.com/github/codeql-action"
-    default: true
+    default: "true"
   coverage:
     description: "Optional flag to enable coverage report. See https://github.com/codecov/codecov-action"
-    default: true
+    default: "true"
 
 runs:
   using: "composite"
@@ -77,14 +77,23 @@ runs:
       if: inputs.build != 'false'
       shell: bash
       run: |
-        echo ::set-output name=gatsby::$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")
-        echo ::set-output name=storybook::$([[ `yarn list --pattern "storybook" --depth=1 | grep " @storybook/[-a-z]*@"` ]] && echo "true" || echo "false")
-        echo ::set-output name=prettier::$([[ `yarn list --pattern "prettier" --depth=1 | grep " prettier@"` ]] && echo "true" || echo "false")
+        echo "nx=$([[ `yarn list --pattern "nx" --depth=1 | grep " nx@"` ]] && echo "true" || echo "false")" >> $GITHUB_OUTPUT
+        echo "gatsby=$([[ `yarn list --pattern "gatsby" --depth=1 | grep " gatsby@"` ]] && echo "true" || echo "false")" >> $GITHUB_OUTPUT
+        echo "storybook=$([[ `yarn list --pattern "storybook" --depth=1 | grep " @storybook/[-a-z]*@"` ]] && echo "true" || echo "false")" >> $GITHUB_OUTPUT
+        echo "prettier=$([[ `yarn list --pattern "prettier" --depth=1 | grep " prettier@"` ]] && echo "true" || echo "false")" >> $GITHUB_OUTPUT
+
+    - name: ♻️ NX cache
+      if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.nx == 'true'
+      uses: actions/cache@v3.0.5
+      with:
+        path: node_modules/.cache/nx
+        key: ${{ runner.os }}-cache-nx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-cache-nx-
 
     - name: ♻️ Prettier cache
       if: inputs.checks == 'true' && inputs.lint == 'true' && steps.yarn-installed-packages.outputs.prettier == 'true'
       uses: actions/cache@v3.0.11
-      id: prettier-cache
       with:
         path: node_modules/.cache/prettier
         key: ${{ runner.os }}-cache-prettier-${{ github.sha }}
@@ -107,7 +116,6 @@ runs:
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'
       uses: actions/cache@v3.0.11
-      id: gatsby-cache
       with:
         path: |
           .cache
@@ -119,7 +127,6 @@ runs:
     - name: ♻️ Storybook cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.storybook == 'true'
       uses: actions/cache@v3.0.11
-      id: storybook-cache
       with:
         path: node_modules/.cache/storybook
         key: ${{ runner.os }}-cache-storybook-${{ github.sha }}
@@ -175,7 +182,7 @@ runs:
       shell: bash
       run: |
         JEST_CACHE_DIR=$(yarn jest --showConfig | grep -oP '(?<="cacheDirectory": ")[^"]+(?=")')
-        echo "::set-output name=dir::$JEST_CACHE_DIR"
+        echo "dir=$JEST_CACHE_DIR" >> $GITHUB_OUTPUT
 
     - name: ♻️ Test cache
       if: inputs.checks == 'true' && inputs.test == 'true'
@@ -190,7 +197,7 @@ runs:
       if: inputs.checks == 'true' && inputs.test == 'true'
       shell: bash
       env:
-        CI: true
+        CI: "true"
       run: yarn test:ci
 
     - name: 📊 Code coverage

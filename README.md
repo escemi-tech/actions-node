@@ -1,12 +1,12 @@
 <!-- start title -->
 
-# GitHub Action: Node steps
+# GitHub Action: NodeJS Continuous Integration steps
 
 <!-- end title -->
 
 <!-- start description -->
 
-Composite Github Action to provides opinionated NodeJS steps
+Composite Github Action to provides opinionated NodeJS steps forto performs Continuous Integration
 
 <!-- end description -->
 <!-- start contents -->

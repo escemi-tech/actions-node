@@ -84,7 +84,7 @@ runs:
 
     - name: ♻️ NX cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.nx == 'true'
-      uses: actions/cache@v3.0.5
+      uses: actions/cache@v3.0.11
       with:
         path: node_modules/.cache/nx
         key: ${{ runner.os }}-cache-nx-${{ github.sha }}

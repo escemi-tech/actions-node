@@ -107,10 +107,10 @@ runs:
 
     - name: 🛡️ CodeQL Analysis
       if: inputs.checks == 'true' && inputs.code-ql != 'false'
-      uses: github/codeql-action/init@v2.1.33
+      uses: github/codeql-action/init@v2.1.35
       with:
         languages: ${{ inputs.code-ql }}
-    - uses: github/codeql-action/analyze@v2.1.33
+    - uses: github/codeql-action/analyze@v2.1.35
       if: inputs.checks == 'true' && inputs.code-ql != 'false'
 
     - name: ♻️ Gatsby cache

@@ -57,7 +57,7 @@ runs:
             core.setOutput('token', checkoutParams.token);
           }
 
-    - uses: actions/checkout@v3.1.0
+    - uses: actions/checkout@v3.2.0
       if: inputs.checkout != 'false'
       with:
         token: ${{ steps.prepare-checkout.outputs.token || github.token }}

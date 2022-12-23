@@ -84,7 +84,7 @@ runs:
 
     - name: ♻️ NX cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.nx == 'true'
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.0
       with:
         path: node_modules/.cache/nx
         key: ${{ runner.os }}-cache-nx-${{ github.sha }}
@@ -93,7 +93,7 @@ runs:
 
     - name: ♻️ Prettier cache
       if: inputs.checks == 'true' && inputs.lint == 'true' && steps.yarn-installed-packages.outputs.prettier == 'true'
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.0
       with:
         path: node_modules/.cache/prettier
         key: ${{ runner.os }}-cache-prettier-${{ github.sha }}
@@ -115,7 +115,7 @@ runs:
 
     - name: ♻️ Gatsby cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.gatsby == 'true'
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.0
       with:
         path: |
           .cache
@@ -126,7 +126,7 @@ runs:
 
     - name: ♻️ Storybook cache
       if: inputs.build != 'false' && steps.yarn-installed-packages.outputs.storybook == 'true'
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.0
       with:
         path: node_modules/.cache/storybook
         key: ${{ runner.os }}-cache-storybook-${{ github.sha }}
@@ -186,7 +186,7 @@ runs:
 
     - name: ♻️ Test cache
       if: inputs.checks == 'true' && inputs.test == 'true'
-      uses: actions/cache@v3.0.11
+      uses: actions/cache@v3.2.0
       with:
         path: ${{ steps.jest-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-test-${{ github.sha }}

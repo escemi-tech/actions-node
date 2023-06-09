@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "github-action-readme-generator": "^1.2.7",
-    "yaml-validator": "^4.0.0"
+    "yaml-validator": "^4.0.1"
   },
   "scripts": {
     "lint": "yaml-validator action.yml",

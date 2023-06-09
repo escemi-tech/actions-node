@@ -361,10 +361,10 @@ chalk@4.1.2, chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.2:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-check-type@^0.4.11:
+check-type@0.4.11:
   version "0.4.11"
   resolved "https://registry.yarnpkg.com/check-type/-/check-type-0.4.11.tgz#abe3f534a51d31f5ce5726347bb74c0d0f910ccf"
-  integrity sha1-q+P1NKUdMfXOVyY0e7dMDQ+RDM8=
+  integrity sha512-dtbWcp8jwTktDzqdOPPAKmgjQD0nrINuKrOu7bZPA3bCaEFJ00OMfFpsO6txy1y+09P9sp6tQq7T5ons/HcNYw==
   dependencies:
     underscore "1.6.0"
 
@@ -663,6 +663,13 @@ jake@^10.8.5:
     filelist "^1.0.1"
     minimatch "^3.0.4"
 
+js-yaml@4.1.0, js-yaml@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
+  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
+  dependencies:
+    argparse "^2.0.1"
+
 js-yaml@^3.14.1:
   version "3.14.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.14.1.tgz#dae812fdb3825fa306609a8717383c50c36a0537"
@@ -670,13 +677,6 @@ js-yaml@^3.14.1:
   dependencies:
     argparse "^1.0.7"
     esprima "^4.0.0"
-
-js-yaml@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-4.1.0.tgz#c1fb65f8f5017901cdd2c951864ba18458a10602"
-  integrity sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==
-  dependencies:
-    argparse "^2.0.1"
 
 jsonfile@^4.0.0:
   version "4.0.0"
@@ -790,7 +790,7 @@ once@^1.4.0:
   dependencies:
     wrappy "1"
 
-optionator@^0.9.1:
+optionator@0.9.1:
   version "0.9.1"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.9.1.tgz#4f236a6373dae0566a6d43e1326674f50c291499"
   integrity sha512-74RlY5FCnhq4jRxVUPKDaRwrVNXMqsGsiW6AJw4XK8hmtm10wC0ypZBLw5IIp85NZMr91+qd1RvvENwg7jjRFw==
@@ -1065,14 +1065,14 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml-validator@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/yaml-validator/-/yaml-validator-4.0.0.tgz#4d8872ffd366161f7876c51d137f2e24c68eef4f"
-  integrity sha512-WuD6IsuLYgL/6gaaD/Q1vsRLj7MMBoxvieNRFKALaVUOExcKIfgIpOJVVoVDIR8nfYQylNjCt6nr9MxWDjWLLg==
+yaml-validator@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/yaml-validator/-/yaml-validator-4.0.1.tgz#bfbd6f5a3b206c69dce3b743d7fc87b33559215e"
+  integrity sha512-XCs9QHIhaMXNevciY+dHf/ZKOprVbGc10cTifpLTXV79e11rIvKULIW0Pt6rf6prj5sknzzVyZfSzvndkkakdA==
   dependencies:
-    check-type "^0.4.11"
-    js-yaml "^4.1.0"
-    optionator "^0.9.1"
+    check-type "0.4.11"
+    js-yaml "4.1.0"
+    optionator "0.9.1"
 
 yargs-parser@^21.0.0:
   version "21.0.1"

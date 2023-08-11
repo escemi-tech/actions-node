@@ -1065,10 +1065,10 @@ yallist@^4.0.0:
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-4.0.0.tgz#9bb92790d9c0effec63be73519e11a35019a3a72"
   integrity sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
 
-yaml-validator@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/yaml-validator/-/yaml-validator-5.0.0.tgz#4bfc1eed420f0ba780d65357670430ba3fda14d0"
-  integrity sha512-XoJDUJPrLOE/nKRB5ptcMxQSFkhKn52mEjvKDnKPHL6sz6cAtqmvJC2Oix17g/ZAc5eQq9sOnQQonDRrgx4eKQ==
+yaml-validator@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/yaml-validator/-/yaml-validator-5.1.0.tgz#c31d29ecde7f7f4109692251ef7bbb29cb293001"
+  integrity sha512-DvfUGsQ1ZAeKBabG1NfkSCEL2U0NdPlSrX85V7zS1yh6Xl8bEMjm8y2OUy9Uig4PLYEb0AKN1rAoxZvhiKzYzA==
   dependencies:
     check-type "0.4.11"
     js-yaml "4.1.0"

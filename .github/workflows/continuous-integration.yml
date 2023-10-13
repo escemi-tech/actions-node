@@ -40,7 +40,7 @@ jobs:
       - name: 📖 Generate README
         uses: bitflight-devops/github-action-readme-generator@v1.5.0
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "chore: prepare release"
           file_pattern: README.md

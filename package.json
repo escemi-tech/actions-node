@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "github-action-readme-generator": "^1.7.2",
+    "github-action-readme-generator": "^1.8.0",
     "yaml-validator": "^5.1.0"
   },
   "scripts": {

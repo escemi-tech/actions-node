@@ -1,3 +1,7 @@
+**⚠ Deprecated - Use https://github.com/hoverkraft-tech/ci-github-nodejs**
+
+---
+
 <!-- start title -->
 
 # <img src=".github/ghadocs/branding.svg" width="60px" align="center" alt="branding<icon:box color:green>" /> GitHub Action: NodeJS Continuous Integration steps
